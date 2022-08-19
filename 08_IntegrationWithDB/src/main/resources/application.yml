@@ -10,4 +10,4 @@ spring:
     properties:
       hibernate:
         dialetic: org.hibernate.dialetic.MySQL57Dialect
-      show-sql: false
+    show-sql: false
