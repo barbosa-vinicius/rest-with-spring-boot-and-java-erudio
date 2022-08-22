@@ -1,6 +1,7 @@
 package io.github.barbosavinicius.controllers;
 
 import io.github.barbosavinicius.data.vo.v1.PersonVO;
+import io.github.barbosavinicius.data.vo.v2.PersonVOV2;
 import io.github.barbosavinicius.services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,12 @@ public class PersonController {
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public PersonVO create(@RequestBody PersonVO personVO) {
 		return service.create(personVO);
+	}
+
+	@PostMapping(value = "/v2", produces = MediaType.APPLICATION_JSON_VALUE,
+				 consumes = MediaType.APPLICATION_JSON_VALUE)
+	public PersonVOV2 createV2(@RequestBody PersonVOV2 personVO) {
+		return service.createV2(personVO);
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

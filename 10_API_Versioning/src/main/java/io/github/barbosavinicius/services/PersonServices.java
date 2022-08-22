@@ -1,8 +1,10 @@
 package io.github.barbosavinicius.services;
 
 import io.github.barbosavinicius.data.vo.v1.PersonVO;
+import io.github.barbosavinicius.data.vo.v2.PersonVOV2;
 import io.github.barbosavinicius.exceptions.ResourceNotFoundException;
 import io.github.barbosavinicius.mapper.DozerMapper;
+import io.github.barbosavinicius.mapper.custom.PersonMapper;
 import io.github.barbosavinicius.model.Person;
 import io.github.barbosavinicius.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class PersonServices {
 
 	@Autowired
 	PersonRepository repository;
+
+	@Autowired
+	PersonMapper personMapper;
 
 	public List<PersonVO> findAll() {
 		logger.info("Finding all people!");
@@ -38,6 +43,15 @@ public class PersonServices {
 
 		var entity = DozerMapper.parseObject(person, Person.class);
 		var vo = DozerMapper.parseObject(repository.save(entity), PersonVO.class);
+
+		return vo;
+	}
+
+	public PersonVOV2 createV2(PersonVOV2 person) {
+		logger.info("Creating one person with V2!");
+
+		var entity = personMapper.convertVOToEntity(person);
+		var vo = personMapper.convertEntityToVO(repository.save(entity));
 
 		return vo;
 	}
