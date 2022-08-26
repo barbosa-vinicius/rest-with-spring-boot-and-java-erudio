@@ -1,5 +1,6 @@
 package io.github.barbosavinicius.services;
 
+import io.github.barbosavinicius.controllers.BookController;
 import io.github.barbosavinicius.data.vo.v1.BookVO;
 import io.github.barbosavinicius.exceptions.RequiredObjectIsNullException;
 import io.github.barbosavinicius.exceptions.ResourceNotFoundException;
@@ -7,10 +8,15 @@ import io.github.barbosavinicius.mapper.DozerMapper;
 import io.github.barbosavinicius.model.Book;
 import io.github.barbosavinicius.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class BookServices {
@@ -24,6 +30,9 @@ public class BookServices {
 		logger.info("Finding all books!");
 
 		var books = DozerMapper.parseListObjects(repository.findAll(), BookVO.class);
+
+		books.stream().forEach(b -> b.add(linkTo(methodOn(BookController.class).findById(b.getKey())).withSelfRel()));
+
 		return books;
 	}
 
@@ -33,7 +42,9 @@ public class BookServices {
 		var book = repository.findById(id)
 							 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
 		var vo = DozerMapper.parseObject(book, BookVO.class);
-
+		List<Link> links = Arrays.asList(linkTo(methodOn(BookController.class).findById(vo.getKey())).withSelfRel(),
+										 linkTo(methodOn(BookController.class).update(vo)).withRel("Update"));
+		vo.add(links);
 		return vo;
 	}
 
@@ -45,7 +56,7 @@ public class BookServices {
 
 		var entity = DozerMapper.parseObject(book, Book.class);
 		var vo = DozerMapper.parseObject(repository.save(entity), BookVO.class);
-
+		vo.add(linkTo(methodOn(BookController.class).findById(vo.getKey())).withSelfRel());
 		return vo;
 	}
 
@@ -63,7 +74,7 @@ public class BookServices {
 		entity.setTitle(book.getTitle());
 
 		var vo = DozerMapper.parseObject(repository.save(entity), BookVO.class);
-
+		vo.add(linkTo(methodOn(BookController.class).findById(vo.getKey())).withSelfRel());
 		return vo;
 	}
 

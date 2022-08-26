@@ -19,7 +19,10 @@ import java.util.List;
 @RequestMapping("/api/person/v1")
 @Tag(name = "People", description = "Endpoints for Managing People") //para incluir/especificar na documentação
 public class PersonController {
-
+	/* TODO
+	  	- Service
+	  		- Create BookServiceTests
+	*/
 	@Autowired
 	private PersonServices service;
 	//private PersonSerivces service = new PersonServices();
